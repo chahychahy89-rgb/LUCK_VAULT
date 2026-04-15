@@ -1,21 +1,18 @@
-
-          
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خزنة الحظ الرقمية</title>
+    <title>خزنة الحظ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; background-color: #0f172a; color: white; padding: 20px; }
-        .card { background: #1e293b; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px; }
-        .vault { font-size: 80px; margin: 15px; }
-        .balance { font-size: 28px; color: #fbbf24; font-weight: bold; }
+        body { font-family: sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding: 20px; }
+        .card { background: #2a2a2a; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .balance { font-size: 30px; color: #ffcc00; margin: 10px 0; }
+        .btn { background: #ffcc00; color: black; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; }
         #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
-        .btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #000; border: none; padding: 15px 25px; font-size: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -23,44 +20,34 @@
     <div class="card">
         <h1>💰 خزنة الحظ 💰</h1>
         <div class="balance"><span id="points">0</span> 💎</div>
-        <div class="vault" id="vault-icon">🔒</div>
-        <button class="btn" id="watchAdBtn">فتح الخزنة (+10 نقاط)</button>
-        <p style="color: #94a3b8;">جمع النقاط لتحويلها لعملات TON حقيقية!</p>
-    </div>
-    <div class="card" id="wallet-info" style="display:none;">
-        <h3 style="color: #10b981;">محفظتك مربوطة ✅</h3>
-        <button class="btn" id="withdrawBtn">طلب سحب الأرباح</button>
+        <button class="btn" id="watchAdBtn">افتح الخزنة (شاهد إعلان)</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // ربط المحفظة
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://souadbinas.github.io/LuckVault/tonconnect-manifest.json',
+            manifestUrl: 'https://chahychahy89-rgb.github.io/LUCK_VAULT/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
+        // إعداد الإعلانات (مع وضع التجربة debug: true)
         const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
+
         let points = localStorage.getItem('userPoints') || 0;
         document.getElementById('points').innerText = points;
-
-        tonConnectUI.onStatusChange(wallet => {
-            if (wallet) document.getElementById('wallet-info').style.display = 'block';
-        });
 
         document.getElementById('watchAdBtn').addEventListener('click', () => {
             AdController.show().then(() => {
                 points = parseInt(points) + 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
-                document.getElementById('vault-icon').innerText = '🔓';
-                setTimeout(() => { document.getElementById('vault-icon').innerText = '🔒'; }, 2000);
-            }).catch(() => { alert('اكمل الإعلان للحصول على الجواهر! 📺'); });
-        });
-
-        document.getElementById('withdrawBtn').addEventListener('click', () => {
-            alert('تم تسجيل طلب السحب! سيتم التحقق من نقاطك وإرسال العملات قريباً.');
+                alert('مبروك! حصلت على 10 جواهر 💎');
+            }).catch(() => {
+                alert('عذراً، لم يكتمل الإعلان.');
+            });
         });
     </script>
 </body>
