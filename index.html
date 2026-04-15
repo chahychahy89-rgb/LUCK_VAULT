@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خزنة الحظ</title>
+    <title>Luck Vault</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         body { font-family: sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding: 20px; }
-        .card { background: #242424; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-top: 20px; }
+        .card { background: #242424; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .btn { background: #facc15; color: black; border: none; padding: 15px 20px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
-        #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
         .balance-container { font-size: 40px; margin: 20px 0; color: #facc15; }
     </style>
 </head>
 <body>
-    <div id="ton-connect-button"></div>
+    <div id="ton-connect-button" style="display: flex; justify-content: center; margin-bottom: 20px;"></div>
     <div class="card">
         <h1>💰 خزنة الحظ 💰</h1>
         <div class="balance-container"><span id="points">0</span> 💎</div>
@@ -28,13 +27,12 @@
         tg.ready();
         tg.expand();
 
-        // ربط المحفظة بالرابط الصحيح اللي في صورتك
+        // التصحيح: استخدام الرابط المسجل في Adsgram
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://souadbinas.github.io/LuckVault/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // إعداد الإعلانات - تأكدي من blockId من Adsgram
         const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
 
         let points = parseInt(localStorage.getItem('userPoints')) || 0;
@@ -47,8 +45,7 @@
                 document.getElementById('points').innerText = points;
                 tg.showAlert("مبروك! كسبت 10 جواهر 💎");
             }).catch((err) => {
-                console.error(err);
-                tg.showAlert("الإعلان لسه بيحمل، جرب كمان لحظة!");
+                tg.showAlert("الإعلان بيحمل.. تأكد أن حساب Adsgram أصبح Active");
             });
         });
     </script>
