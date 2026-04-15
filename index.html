@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خزنة الحظ</title>
+    <title>Luck Vault</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         body { font-family: sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding: 20px; }
-        .card { background: #2a2a2a; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .balance { font-size: 30px; color: #ffcc00; margin: 10px 0; }
-        .btn { background: #ffcc00; color: black; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; }
+        .card { background: #242424; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .btn { background: #facc15; color: black; border: none; padding: 15px 20px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
         #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
+        .balance-container { font-size: 40px; margin: 20px 0; }
     </style>
 </head>
 <body>
     <div id="ton-connect-button"></div>
     <div class="card">
-        <h1>💰 خزنة الحظ 💰</h1>
-        <div class="balance"><span id="points">0</span> 💎</div>
-        <button class="btn" id="watchAdBtn">افتح الخزنة (شاهد إعلان)</button>
+        <h1>خزنة الحظ</h1>
+        <div class="balance-container">💎 <span id="points">0</span></div>
+        <button class="btn" id="watchAdBtn">افتح الخزنة (إعلان)</button>
     </div>
 
     <script>
@@ -33,7 +33,7 @@
             buttonRootId: 'ton-connect-button'
         });
 
-        // إعداد الإعلانات (مع وضع التجربة debug: true)
+        // ربط الإعلانات - تأكدي من ID 27785
         const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
 
         let points = localStorage.getItem('userPoints') || 0;
@@ -44,9 +44,10 @@
                 points = parseInt(points) + 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
-                alert('مبروك! حصلت على 10 جواهر 💎');
-            }).catch(() => {
-                alert('عذراً، لم يكتمل الإعلان.');
+                tg.showAlert("مبروك! كسبت 10 جواهر 💎");
+            }).catch((err) => {
+                console.error(err);
+                tg.showAlert("الإعلان لسه مش جاهز، حاول كمان ثواني!");
             });
         });
     </script>
