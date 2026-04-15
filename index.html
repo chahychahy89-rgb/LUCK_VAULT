@@ -2,54 +2,46 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LUCK VAULT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خزنة الحظ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://sad.adsgram.ai/js/adsgram-adlib.js"></script>
+    <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: #1a1a1a; color: white; text-align: center; margin: 0; padding: 20px; overflow: hidden; }
-        .container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; }
-        .vault-icon { width: 150px; height: 150px; margin-bottom: 20px; filter: drop-shadow(0 0 10px #ffd700); }
-        h1 { color: #ffd700; font-size: 24px; }
-        .stats { background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; padding: 15px; border-radius: 15px; width: 80%; margin: 20px 0; }
-        .key-count { font-size: 28px; font-weight: bold; color: #ffd700; }
-        .btn { background: linear-gradient(45deg, #ffd700, #b8860b); color: black; border: none; padding: 15px 30px; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; width: 80%; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: 0.3s; }
-        .btn:active { transform: scale(0.95); }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding: 20px; }
+        .vault { font-size: 100px; margin: 20px; }
+        .balance { font-size: 24px; color: #ffd700; margin-bottom: 20px; }
+        button { background-color: #ffd700; color: black; border: none; padding: 15px 30px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        button:disabled { background-color: #555; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="https://cdn-icons-png.flaticon.com/512/2534/2534000.png" class="vault-icon" alt="Vault">
-        <h1>خزنة الحظ الكبرى</h1>
-        <div class="stats">
-            <p>مفاتيحك الحالية</p>
-            <div class="key-count" id="keyCount">0</div>
-        </div>
-        <button class="btn" onclick="showAd()">📺 احصل على مفتاح إضافي</button>
-        <p style="font-size: 12px; margin-top: 20px; opacity: 0.7;">اجمع 100 مفتاح لفتح الخزنة!</p>
-    </div>
+    <h1>💰 خزنة الحظ 💰</h1>
+    <div class="balance">أرباحك: <span id="rewardCount">0</span> نقطة</div>
+    <div class="vault">🔒</div>
+    <p>شاهد الإعلان لفتح الخزنة وجمع المفاتيح!</p>
+    <button id="showAdBtn">فتح الخزنة (إعلان)</button>
 
     <script>
-        let keys = parseInt(localStorage.getItem('keys')) || 0;
-        document.getElementById('keyCount').innerText = keys;
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-        // تهيئة الإعلانات (سوف نضع الـ ID هنا فور عودة الخدمة)
-        const AdController = window.Adsgram.init({ blockId: "YOUR_BLOCK_ID_HERE" });
+        // ربط Adsgram باستخدام الـ Block ID بتاعك
+        const AdController = window.Adsgram.init({ blockId: "27785" });
+        let rewards = 0;
 
-        async function showAd() {
-            try {
-                const result = await AdController.show();
-                if (result.done) {
-                    // إذا شاهد المستخدم الإعلان كاملاً
-                    keys++;
-                    localStorage.setItem('keys', keys);
-                    document.getElementById('keyCount').innerText = keys;
-                    alert("مبروك! حصلت على مفتاح جديد 🔑");
-                }
-            } catch (error) {
-                alert("الإعلان غير جاهز حالياً، حاول لاحقاً");
-            }
-        }
+        document.getElementById('showAdBtn').addEventListener('click', () => {
+            AdController.show().then((result) => {
+                // لو المستخدم شاف الإعلان للآخر
+                rewards++;
+                document.getElementById('rewardCount').innerText = rewards;
+                document.querySelector('.vault').innerText = '🔓';
+                alert('مبروك! فتحت الخزنة وأخدت مفتاح ذهبي 🔑');
+                setTimeout(() => { document.querySelector('.vault').innerText = '🔒'; }, 3000);
+            }).catch((result) => {
+                // لو قفل الإعلان أو حصل خطأ
+                alert('لازم تشوف الإعلان كامل عشان تفتح الخزنة! ❌');
+            });
+        });
     </script>
 </body>
 </html>
