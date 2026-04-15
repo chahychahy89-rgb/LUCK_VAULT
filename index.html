@@ -1,3 +1,5 @@
+
+          
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -8,76 +10,57 @@
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #0f172a; color: white; padding: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background-color: #0f172a; color: white; padding: 20px; }
         .card { background: #1e293b; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px; }
-        .vault { font-size: 80px; margin: 15px; transition: transform 0.3s; }
+        .vault { font-size: 80px; margin: 15px; }
         .balance { font-size: 28px; color: #fbbf24; font-weight: bold; }
         #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
         .btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #000; border: none; padding: 15px 25px; font-size: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .status { font-size: 14px; color: #94a3b8; margin-top: 10px; }
     </style>
 </head>
 <body>
-
     <div id="ton-connect-button"></div>
-
     <div class="card">
         <h1>💰 خزنة الحظ 💰</h1>
-        <div class="balance">< id="points">0</> 💎</div>
+        <div class="balance"><span id="points">0</span> 💎</div>
         <div class="vault" id="vault-icon">🔒</div>
         <button class="btn" id="watchAdBtn">فتح الخزنة (+10 نقاط)</button>
-        <p class="status">جمع النقاط لتحويلها لعملات TON حقيقية!</p>
+        <p style="color: #94a3b8;">جمع النقاط لتحويلها لعملات TON حقيقية!</p>
     </div>
-
     <div class="card" id="wallet-info" style="display:none;">
-        <h3>محفظتك مربوطة ✅</h3>
-        <button class="btn" style="background: #10b981;" id="withdrawBtn">طلب سحب الأرباح</button>
+        <h3 style="color: #10b981;">محفظتك مربوطة ✅</h3>
+        <button class="btn" id="withdrawBtn">طلب سحب الأرباح</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. إعداد ربط المحفظة (TON Connect)
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://souadbinas.github.io/LuckVault/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // 2. إعداد الإعلانات
         const AdController = window.Adsgram.init({ blockId: "27785" });
-
         let points = localStorage.getItem('userPoints') || 0;
         document.getElementById('points').innerText = points;
 
-        // مراقبة ربط المحفظة
         tonConnectUI.onStatusChange(wallet => {
-            if (wallet) {
-                document.getElementById('wallet-info').style.display = 'block';
-            }
+            if (wallet) document.getElementById('wallet-info').style.display = 'block';
         });
 
-        // تشغيل الإعلان وزيادة النقاط
         document.getElementById('watchAdBtn').addEventListener('click', () => {
-            AdController.show().then((result) => {
+            AdController.show().then(() => {
                 points = parseInt(points) + 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
                 document.getElementById('vault-icon').innerText = '🔓';
-                tg.HapticFeedback.notificationOccurred('success');
                 setTimeout(() => { document.getElementById('vault-icon').innerText = '🔒'; }, 2000);
-            }).catch((err) => {
-                alert('اكمل الإعلان للحصول على المكافأة! 📺');
-            });
+            }).catch(() => { alert('اكمل الإعلان للحصول على الجواهر! 📺'); });
         });
 
-        // طلب السحب
         document.getElementById('withdrawBtn').addEventListener('click', () => {
-            if (points < 1000) {
-                alert('الحد الأدنى للسحب هو 1000 نقطة. استمر في جمع الجواهر! 💎');
-            } else {
-                alert('تم تسجيل طلبك! سيتم مراجعة النقاط وإرسال العملات لمحفظتك المربوطة خلال 24 ساعة.');
-            }
+            alert('تم تسجيل طلب السحب! سيتم التحقق من نقاطك وإرسال العملات قريباً.');
         });
     </script>
 </body>
