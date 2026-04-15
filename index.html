@@ -41,7 +41,7 @@
             buttonRootId: 'ton-connect-button'
         });
 
-        const AdController = window.Adsgram.init({ blockId: "27785" });
+        const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
         let points = localStorage.getItem('userPoints') || 0;
         document.getElementById('points').innerText = points;
 
