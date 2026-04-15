@@ -4,27 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luck Vault</title>
-    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://adsgram.ai/sdk/v1/adsgram-sdk.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding-top: 50px; margin: 0; }
+        body { font-family: sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding-top: 50px; }
         .card { background: #242424; border-radius: 20px; padding: 30px; margin: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .btn { background: #facc15; color: black; border: none; padding: 15px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-top: 20px; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); background: #eab308; }
+        .btn { background: #facc15; color: black; border: none; padding: 15px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-top: 20px; }
         .balance-container { font-size: 40px; margin: 20px 0; color: #facc15; }
         #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-
     <div id="ton-connect-button"></div>
-
     <div class="card">
         <h1>💰 خزنة الحظ 💰</h1>
-        <div class="balance-container">
-            <span id="points">0</span> 💎
-        </div>
-        <button class="btn" id="watchAdBtn">افتح الخزنة (
+        <div class="balance-container"><span id="points">0</span> 💎</div>
+        <button class="btn" id="watchAdBtn">افتح الخزنة (شاهد إعلان) 🎁</button>
+    </div>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        const AdController = window.Adsgram.init({ blockId: "27803" });
+
+        let points = parseInt(localStorage.getItem('userPoints')) || 0;
+        document.getElementById('points').innerText = points;
+
+        document.getElementById('watchAdBtn').addEventListener('click', () => {
+            AdController.show().then((result) => {
+                points += 10;
+                localStorage.setItem('userPoints', points);
+                document.getElementById('points').innerText = points;
+                tg.showAlert("✅ مبروك! حصلت على 10 جواهر 💎");
+            }).catch((err) => {
+                tg.showAlert("⚠️ الإعلان قيد المراجعة أو غير متاح حالياً. يرجى الانتظار حتى تصبح الحالة Active في Adsgram.");
+            });
+        });
+    </script>
+</body>
+</html>
