@@ -3,44 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خزنة الحظ</title>
+    <title>خزنة الحظ الرقمية</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding: 20px; }
-        .vault { font-size: 100px; margin: 20px; }
-        .balance { font-size: 24px; color: #ffd700; margin-bottom: 20px; }
-        button { background-color: #ffd700; color: black; border: none; padding: 15px 30px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        button:disabled { background-color: #555; cursor: not-allowed; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #0f172a; color: white; padding: 20px; }
+        .card { background: #1e293b; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .vault { font-size: 80px; margin: 15px; transition: transform 0.3s; }
+        .balance { font-size: 28px; color: #fbbf24; font-weight: bold; }
+        #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
+        .btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #000; border: none; padding: 15px 25px; font-size: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .status { font-size: 14px; color: #94a3b8; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <h1>💰 خزنة الحظ 💰</h1>
-    <div class="balance">أرباحك: <span id="rewardCount">0</span> نقطة</div>
-    <div class="vault">🔒</div>
-    <p>شاهد الإعلان لفتح الخزنة وجمع المفاتيح!</p>
-    <button id="showAdBtn">فتح الخزنة (إعلان)</button>
+
+    <div id="ton-connect-button"></div>
+
+    <div class="card">
+        <h1>💰 خزنة الحظ 💰</h1>
+        <div class="balance">< id="points">0</> 💎</div>
+        <div class="vault" id="vault-icon">🔒</div>
+        <button class="btn" id="watchAdBtn">فتح الخزنة (+10 نقاط)</button>
+        <p class="status">جمع النقاط لتحويلها لعملات TON حقيقية!</p>
+    </div>
+
+    <div class="card" id="wallet-info" style="display:none;">
+        <h3>محفظتك مربوطة ✅</h3>
+        <button class="btn" style="background: #10b981;" id="withdrawBtn">طلب سحب الأرباح</button>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // ربط Adsgram باستخدام الـ Block ID بتاعك
-        const AdController = window.Adsgram.init({ blockId: "27785" });
-        let rewards = 0;
+        // 1. إعداد ربط المحفظة (TON Connect)
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://souadbinas.github.io/LuckVault/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-button'
+        });
 
-        document.getElementById('showAdBtn').addEventListener('click', () => {
+        // 2. إعداد الإعلانات
+        const AdController = window.Adsgram.init({ blockId: "27785" });
+
+        let points = localStorage.getItem('userPoints') || 0;
+        document.getElementById('points').innerText = points;
+
+        // مراقبة ربط المحفظة
+        tonConnectUI.onStatusChange(wallet => {
+            if (wallet) {
+                document.getElementById('wallet-info').style.display = 'block';
+            }
+        });
+
+        // تشغيل الإعلان وزيادة النقاط
+        document.getElementById('watchAdBtn').addEventListener('click', () => {
             AdController.show().then((result) => {
-                // لو المستخدم شاف الإعلان للآخر
-                rewards++;
-                document.getElementById('rewardCount').innerText = rewards;
-                document.querySelector('.vault').innerText = '🔓';
-                alert('مبروك! فتحت الخزنة وأخدت مفتاح ذهبي 🔑');
-                setTimeout(() => { document.querySelector('.vault').innerText = '🔒'; }, 3000);
-            }).catch((result) => {
-                // لو قفل الإعلان أو حصل خطأ
-                alert('لازم تشوف الإعلان كامل عشان تفتح الخزنة! ❌');
+                points = parseInt(points) + 10;
+                localStorage.setItem('userPoints', points);
+                document.getElementById('points').innerText = points;
+                document.getElementById('vault-icon').innerText = '🔓';
+                tg.HapticFeedback.notificationOccurred('success');
+                setTimeout(() => { document.getElementById('vault-icon').innerText = '🔒'; }, 2000);
+            }).catch((err) => {
+                alert('اكمل الإعلان للحصول على المكافأة! 📺');
             });
+        });
+
+        // طلب السحب
+        document.getElementById('withdrawBtn').addEventListener('click', () => {
+            if (points < 1000) {
+                alert('الحد الأدنى للسحب هو 1000 نقطة. استمر في جمع الجواهر! 💎');
+            } else {
+                alert('تم تسجيل طلبك! سيتم مراجعة النقاط وإرسال العملات لمحفظتك المربوطة خلال 24 ساعة.');
+            }
         });
     </script>
 </body>
