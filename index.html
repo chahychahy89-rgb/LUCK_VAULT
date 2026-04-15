@@ -18,22 +18,22 @@
 <body>
     <div id="ton-connect-button"></div>
     <div class="card">
-        <h1>خزنة الحظ</h1>
+        <h1>💰 خزنة الحظ 💰</h1>
         <div class="balance-container">💎 <span id="points">0</span></div>
-        <button class="btn" id="watchAdBtn">افتح الخزنة (إعلان)</button>
+        <button class="btn" id="watchAdBtn">افتح الخزنة (شاهد إعلان)</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // ربط المحفظة
+        // ربط المحفظة - تأكدي أن الرابط صحيح
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://chahychahy89-rgb.github.io/LUCK_VAULT/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // ربط الإعلانات - تأكدي من ID 27785
+        // إعداد الإعلانات - تفعيل وضع الاختبار debug
         const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
 
         let points = localStorage.getItem('userPoints') || 0;
@@ -46,8 +46,7 @@
                 document.getElementById('points').innerText = points;
                 tg.showAlert("مبروك! كسبت 10 جواهر 💎");
             }).catch((err) => {
-                console.error(err);
-                tg.showAlert("الإعلان لسه مش جاهز، حاول كمان ثواني!");
+                tg.showAlert("الإعلان لسه بيحمل، جرب كمان ثواني!");
             });
         });
     </script>
