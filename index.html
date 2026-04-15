@@ -1,58 +1,111 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luck Vault</title>
+    <title>خزنة الحظ - Luck Vault</title>
+    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://adsgram.ai/js/adsgram-ad-sdk.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding: 20px; }
-        .card { background: #242424; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .btn { background: #facc15; color: black; border: none; padding: 15px 20px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
-        #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
-        .balance-container { font-size: 40px; margin: 20px 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            background-color: #121212; 
+            color: white; 
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card { 
+            background: #1e1e1e; 
+            border-radius: 25px; 
+            padding: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            width: 90%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+        .btn { 
+            background: linear-gradient(45deg, #facc15, #eab308); 
+            color: black; 
+            border: none; 
+            padding: 18px; 
+            border-radius: 15px; 
+            font-size: 20px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 25px;
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.98); }
+        #ton-connect-button { margin-bottom: 20px; }
+        .balance-container { 
+            font-size: 48px; 
+            margin: 20px 0; 
+            font-weight: bold;
+            color: #facc15;
+        }
+        h1 { font-size: 24px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
+
     <div id="ton-connect-button"></div>
+
     <div class="card">
         <h1>💰 خزنة الحظ 💰</h1>
-        <div class="balance-container">💎 <span id="points">0</span></div>
-        <button class="btn" id="watchAdBtn">افتح الخزنة (شاهد إعلان)</button>
+        <p>جمع الجواهر واستبدلها بجوائز</p>
+        
+        <div class="balance-container">
+            <span id="points">0</span> 💎
+        </div>
+
+        <button class="btn" id="watchAdBtn">🔓 افتح الخزنة (إعلان)</button>
     </div>
 
     <script>
+        // 1. تعريف بوت تليجرام
         const tg = window.Telegram.WebApp;
-        tg.ready(); // تأكيد إن البوت جاهز
+        tg.ready();
         tg.expand();
 
-        // ربط المحفظة
+        // 2. إعداد ربط المحفظة (تأكدي أن الرابط صحيح تماماً)
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://chahychahy89-rgb.github.io/LUCK_VAULT/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // إعداد الإعلانات - تأكدي من حرف A كبير في Adsgram
-        const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
+        // 3. إعداد الإعلانات (مع وضع الاختبار Debug للتجربة)
+        const AdController = window.Adsgram.init({ 
+            blockId: "27785", 
+            debug: true 
+        });
 
-        let points = localStorage.getItem('userPoints') || 0;
+        // 4. تحميل النقاط المحفوظة
+        let points = parseInt(localStorage.getItem('userPoints')) || 0;
         document.getElementById('points').innerText = points;
 
+        // 5. وظيفة زر فتح الخزنة
         document.getElementById('watchAdBtn').addEventListener('click', () => {
-            // محاولة إظهار الإعلان
+            // تنبيه بسيط لبدء العملية
+            console.log("محاولة فتح الإعلان...");
+
             AdController.show().then(() => {
-                // لو الإعلان خلص بنجاح
-                points = parseInt(points) + 10;
+                // في حالة مشاهدة الإعلان بنجاح
+                points += 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
-                tg.showAlert("مبروك! كسبت 10 جواهر 💎");
-            }).catch((err) => {
-                // لو حصل أي خطأ أو الإعلان لسه مراجعش
-                console.error(err);
-                tg.showAlert("الإعلان لسه بيحمل من الشركة، جرب كمان ثواني!");
+                tg.showAlert("تهانينا! حصلت على 10 جواهر 💎");
+            }).catch((result) => {
+                // في حالة فشل الإعلان أو عدم توفره
+                console.error("خطأ في الإعلان:", result);
+                tg.showAlert("عذراً، الإعلان غير جاهز حالياً. تأكد أن حسابك في Adsgram أصبح Active.");
             });
         });
     </script>
