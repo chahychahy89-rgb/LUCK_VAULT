@@ -41,25 +41,25 @@
             buttonRootId: 'ton-connect-button'
         });
 
-        // تهيئة Adsgram بالرقم الجديد الخاص بك 27803
+        // تهيئة Adsgram بالرقم الجديد الخاص بك
         const AdController = window.Adsgram.init({ blockId: "27803" });
 
-        // إدارة النقاط (حفظ محلي)
+        // إدارة النقاط
         let points = parseInt(localStorage.getItem('userPoints')) || 0;
         document.getElementById('points').innerText = points;
 
         // تشغيل الإعلان عند الضغط على الزر
         document.getElementById('watchAdBtn').addEventListener('click', () => {
             AdController.show().then((result) => {
-                // إذا اكتمل الإعلان بنجاح
+                // عند مشاهدة الإعلان بنجاح
                 points += 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
                 tg.showAlert("✅ مبروك! حصلت على 10 جواهر 💎");
             }).catch((err) => {
-                // في حال لم يتوفر إعلان أو حدث خطأ
-                console.error("Adsgram Error:", err);
-                tg.showAlert("⚠️ عذراً، الإعلان غير جاهز حالياً. تأكد من حالة الوحدة في Adsgram (يجب أن تكون Active).");
+                // في حال عدم توفر إعلان أو خطأ
+                console.error("Adsgram error:", err);
+                tg.showAlert("⚠️ عذراً، الإعلان غير جاهز. تأكد من حالة الوحدة في Adsgram (يجب أن تكون Active).");
             });
         });
     </script>
