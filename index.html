@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -25,37 +26,35 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
+        tg.ready(); // تأكيد إن البوت جاهز
         tg.expand();
 
         // ربط المحفظة
-        https://chahychahy89-rgb.github.io/LUCK_VAULT/tonconnect-manifest.json
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://chahychahy89-rgb.github.io/LUCK_VAULT/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // إعداد الإعلانات - تأكدي من الـ ID
+        // إعداد الإعلانات - تأكدي من حرف A كبير في Adsgram
         const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
 
-        let points = parseInt(localStorage.getItem('userPoints')) || 0;
+        let points = localStorage.getItem('userPoints') || 0;
         document.getElementById('points').innerText = points;
 
-        const btn = document.getElementById('watchAdBtn');
-
-        btn.onclick = function() {
+        document.getElementById('watchAdBtn').addEventListener('click', () => {
             // محاولة إظهار الإعلان
             AdController.show().then(() => {
-                // لو نجح
-                points += 10;
+                // لو الإعلان خلص بنجاح
+                points = parseInt(points) + 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
                 tg.showAlert("مبروك! كسبت 10 جواهر 💎");
             }).catch((err) => {
-                // لو فشل أو مفيش إعلانات
+                // لو حصل أي خطأ أو الإعلان لسه مراجعش
                 console.error(err);
-                tg.showAlert("الإعلان بيحمل.. جربي تفتحي الخزنة كمان مرة!");
+                tg.showAlert("الإعلان لسه بيحمل من الشركة، جرب كمان ثواني!");
             });
-        };
+        });
     </script>
 </body>
 </html>
