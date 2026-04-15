@@ -25,30 +25,37 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.ready();
         tg.expand();
 
-        // ربط المحفظة - تأكدي أن الرابط صحيح
+        // ربط المحفظة
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://chahychahy89-rgb.github.io/LUCK_VAULT/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // إعداد الإعلانات - تفعيل وضع الاختبار debug
+        // إعداد الإعلانات - تأكدي من الـ ID
         const AdController = window.Adsgram.init({ blockId: "27785", debug: true });
 
-        let points = localStorage.getItem('userPoints') || 0;
+        let points = parseInt(localStorage.getItem('userPoints')) || 0;
         document.getElementById('points').innerText = points;
 
-        document.getElementById('watchAdBtn').addEventListener('click', () => {
+        const btn = document.getElementById('watchAdBtn');
+
+        btn.onclick = function() {
+            // محاولة إظهار الإعلان
             AdController.show().then(() => {
-                points = parseInt(points) + 10;
+                // لو نجح
+                points += 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
                 tg.showAlert("مبروك! كسبت 10 جواهر 💎");
             }).catch((err) => {
-                tg.showAlert("الإعلان لسه بيحمل، جرب كمان ثواني!");
+                // لو فشل أو مفيش إعلانات
+                console.error(err);
+                tg.showAlert("الإعلان بيحمل.. جربي تفتحي الخزنة كمان مرة!");
             });
-        });
+        };
     </script>
 </body>
 </html>
