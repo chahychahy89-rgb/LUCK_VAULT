@@ -12,7 +12,7 @@
     <style>
         body { font-family: sans-serif; text-align: center; background-color: #1a1a1a; color: white; padding-top: 50px; }
         .card { background: #242424; border-radius: 20px; padding: 30px; margin: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .btn { background: #facc15; color: black; border: none; padding: 15px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; }
+        .btn { background: #facc15; color: black; border: none; padding: 15px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-top: 20px; }
         .balance-container { font-size: 40px; margin: 20px 0; color: #facc15; }
         #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
     </style>
@@ -41,26 +41,25 @@
             buttonRootId: 'ton-connect-button'
         });
 
-        // تهيئة إعلانات Adsgram - (تأكد من رقم الـ Block ID الخاص بك)
+        // تهيئة Adsgram بالرقم الجديد الخاص بك 27803
         const AdController = window.Adsgram.init({ blockId: "27803" });
 
-        // إدارة النقاط
+        // إدارة النقاط (حفظ محلي)
         let points = parseInt(localStorage.getItem('userPoints')) || 0;
         document.getElementById('points').innerText = points;
 
-        // وظيفة الضغط على الزر
+        // تشغيل الإعلان عند الضغط على الزر
         document.getElementById('watchAdBtn').addEventListener('click', () => {
-            // إظهار الإعلان
             AdController.show().then((result) => {
-                // هذا الجزء ينفذ عند مشاهدة الإعلان بنجاح حتى النهاية
+                // إذا اكتمل الإعلان بنجاح
                 points += 10;
                 localStorage.setItem('userPoints', points);
                 document.getElementById('points').innerText = points;
-                tg.showAlert("✅ مبروك! لقد ربحت 10 جوهرات 💎");
+                tg.showAlert("✅ مبروك! حصلت على 10 جواهر 💎");
             }).catch((err) => {
-                // هذا الجزء ينفذ في حال حدوث خطأ أو إغلاق الإعلان مبكراً
-                console.error("Adsgram error:", err);
-                tg.showAlert("⚠️ نعتذر، لا يوجد إعلان متاح حالياً أو تم إغلاقه مبكراً. حاول مجدداً.");
+                // في حال لم يتوفر إعلان أو حدث خطأ
+                console.error("Adsgram Error:", err);
+                tg.showAlert("⚠️ عذراً، الإعلان غير جاهز حالياً. تأكد من حالة الوحدة في Adsgram (يجب أن تكون Active).");
             });
         });
     </script>
